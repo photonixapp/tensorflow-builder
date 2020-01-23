@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.6.8-slim-stretch
+ARG PYTHON_VERSION=3.8.1-slim-buster
 
 FROM python:${PYTHON_VERSION} as tensorflow-builder
 
@@ -6,13 +6,11 @@ RUN apt-get update && \
     apt-get install -y \
         build-essential \
         curl \
-        unzip \
-        python3-dev
+        git \
+        python-dev \
+        unzip
 
-RUN echo "startup --batch" >>/etc/bazel.bazelrc
-RUN echo "build --spawn_strategy=standalone --genrule_strategy=standalone" \
-    >>/etc/bazel.bazelrc
-ENV BAZEL_VERSION 0.18.0
+ENV BAZEL_VERSION 0.29.1
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
@@ -21,11 +19,12 @@ RUN mkdir /bazel && \
     chmod +x bazel-*.sh && \
     ./bazel-$BAZEL_VERSION-installer-linux-x86_64.sh && \
     cd / && \
-rm -f /bazel/bazel-$BAZEL_VERSION-installer-linux-x86_64.sh
+    rm -f /bazel/bazel-$BAZEL_VERSION-installer-linux-x86_64.sh
 
-ENV TENSORFLOW_VERSION 1.12.0
-ENV CI_BUILD_PYTHON python3
-RUN pip install numpy keras_applications keras_preprocessing
+RUN pip install -U pip six numpy wheel setuptools mock 'future>=0.17.1' && \
+    pip install -U keras_applications keras_preprocessing --no-deps
+
+ENV TENSORFLOW_VERSION 2.1.0
 
 RUN curl -fSsL -O https://github.com/tensorflow/tensorflow/archive/v$TENSORFLOW_VERSION.tar.gz && \
     tar xvf v$TENSORFLOW_VERSION.tar.gz
