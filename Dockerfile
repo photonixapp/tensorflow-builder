@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.8.1-slim-buster
+ARG PYTHON_VERSION=3.9.0-slim-buster
 
 FROM python:${PYTHON_VERSION} as tensorflow-builder
 
@@ -10,7 +10,7 @@ RUN apt-get update && \
         python-dev \
         unzip
 
-ENV BAZEL_VERSION 0.29.1
+ENV BAZEL_VERSION 3.1.0
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
@@ -21,10 +21,11 @@ RUN mkdir /bazel && \
     cd / && \
     rm -f /bazel/bazel-$BAZEL_VERSION-installer-linux-x86_64.sh
 
-RUN pip install -U pip six numpy wheel setuptools mock 'future>=0.17.1' && \
+# Up-to-date pip dependencies to be found at https://www.tensorflow.org/install/source
+RUN pip install -U pip six 'numpy<1.19.0' wheel setuptools mock 'future>=0.17.1' 'gast==0.3.3' typing_extensions && \
     pip install -U keras_applications keras_preprocessing --no-deps
 
-ENV TENSORFLOW_VERSION 2.1.0
+ENV TENSORFLOW_VERSION 2.3.1
 
 RUN curl -fSsL -O https://github.com/tensorflow/tensorflow/archive/v$TENSORFLOW_VERSION.tar.gz && \
     tar xvf v$TENSORFLOW_VERSION.tar.gz
