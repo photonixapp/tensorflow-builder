@@ -1,6 +1,8 @@
-ARG PYTHON_VERSION=3.9.0-slim-buster
+ARG ARCH=
+ARG PYTHON_VERSION=3.8.6-slim-buster
 
-FROM python:${PYTHON_VERSION} as tensorflow-builder
+# FROM ${ARCH}debian:buster-slim
+FROM ${ARCH}python:${PYTHON_VERSION} as tensorflow-builder
 
 RUN apt-get update && \
     apt-get install -y \

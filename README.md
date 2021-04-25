@@ -8,5 +8,5 @@ Docker-based build environment that creates Tensorflow packages that don't use o
 Running the command below should output a Python Wheel package in a directory called `wheels`. Beware that building will probably take many hours. Check out the [releases page](https://github.com/damianmoore/tensorflow-builder/releases) to make use of our builds.
 
 ```
-make build
+./build.sh
 ```
