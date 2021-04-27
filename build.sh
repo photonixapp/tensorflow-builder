@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 TENSORFLOW_VERSION="2.4.1"
+BAZEL_VERSION="3.1.0" # Can be found by looking at the .bazelversion file in tensorflow repo at chosen version tag
 NUMPY_VERSION="1.19.2"
 
 if [ "$#" -lt 1 ]; then
   >&2 echo "Usage: $(basename $0) ARCH"
-  >&2 echo "       ARCH can be one of [ x86_64, arm32v7, arm64v8 ]"
+  >&2 echo "       ARCH can be one of [ amd64, arm32v7, arm64v8 ]"
   >&2 echo ""
   exit 1
 fi
@@ -13,8 +14,8 @@ fi
 ARCH=$( echo "$1" | tr '[:upper:]' '[:lower:]' )
 echo $ARCH
 
-if [[ "${ARCH}" == "x86_64" ]]; then
-  docker build -t tensorflow-builder .
+if [[ "${ARCH}" == "amd64" ]]; then
+  docker build -t tensorflow-builder -f Dockerfile.amd64 --build-arg TENSORFLOW_VERSION=${TENSORFLOW_VERSION} --build-arg BAZEL_VERSION=${BAZEL_VERSION} --build-arg NUMPY_VERSION=${NUMPY_VERSION} .
   mkdir -p wheels
   docker run --rm -it --mount type=bind,source="$(pwd)"/wheels,target=/host_wheels tensorflow-builder bash -c "cp /wheels/* /host_wheels/"
   echo "\nHopefully your package is now in the 'wheels' directory."

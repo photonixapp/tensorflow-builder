@@ -10,3 +10,7 @@ Running the command below should output a Python Wheel package in a directory ca
 ```
 ./build.sh
 ```
+
+# TODO
+
+- Provide options for passing in custom PyPI server credentials and having wheels automatically uploaded using pypi-uploader
