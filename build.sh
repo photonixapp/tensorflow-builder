@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 TENSORFLOW_VERSION="2.4.1"
+NUMPY_VERSION="1.19.2"
 
 if [ "$#" -lt 1 ]; then
   >&2 echo "Usage: $(basename $0) ARCH"
@@ -29,11 +30,11 @@ else
   git reset --hard
   git checkout "tags/v${TENSORFLOW_VERSION}"
 
-  # Add missing package to Dockerfile if we haven't already - TODO: fix this
-  if [ ! "git diff tensorflow/tools/ci_build/Dockerfile.pi-python38 | grep +RUN" ]; then
-    echo "Extending Dockerfile"
-    echo "RUN apt-get install -y libpython2.7-dev:armhf" >> tensorflow/tools/ci_build/Dockerfile.pi-python38
-  fi
+  echo "Add missing package to Tensorflow's Dockerfile"
+  echo "RUN apt-get install -y libpython2.7-dev:armhf" >> tensorflow/tools/ci_build/Dockerfile.pi-python38
+
+  echo "Setting Numpy to recommended version rather than whatever the latest is"
+  sed -i "s|numpy|numpy==${NUMPY_VERSION}|g" tensorflow/tools/ci_build/install/install_pip_packages_by_version.sh
 
   if [[ "${ARCH}" == "arm32v7" ]]; then
     tensorflow/tools/ci_build/ci_build.sh PI-PYTHON38 tensorflow/tools/ci_build/pi/build_raspberry_pi.sh
