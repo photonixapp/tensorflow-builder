@@ -5,10 +5,12 @@ Docker-based build environment that creates Tensorflow packages that don't use o
 
 ## Building
 
-Running the command below should output a Python Wheel package in a directory called `wheels`. Beware that building will probably take many hours. Check out the [releases page](https://github.com/damianmoore/tensorflow-builder/releases) to make use of our builds.
+Running the commands below should build Python Wheel packages for each supported architecture in the `wheels` directory. Beware that building will probably take many hours. We usually create the largest possible VPS on DIgitalOcean with 32 CPU cores and it can build each architecture in about an hour. Check out the [releases page](https://github.com/damianmoore/tensorflow-builder/releases) to make use of our builds.
 
 ```
-./build.sh
+./build.sh amd64
+./build.sh arm32v7
+./build.sh arm64v8
 ```
 
 # TODO
