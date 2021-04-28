@@ -13,6 +13,6 @@ Running the commands below should build Python Wheel packages for each supported
 ./build.sh arm64v8
 ```
 
-# TODO
+## Todo
 
 - Provide options for passing in custom PyPI server credentials and having wheels automatically uploaded using pypi-uploader
