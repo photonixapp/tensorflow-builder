@@ -13,12 +13,11 @@ fi
 
 ARCH=$( echo "$1" | tr '[:upper:]' '[:lower:]' )
 echo $ARCH
+mkdir -p wheels
 
 if [[ "${ARCH}" == "amd64" ]]; then
   docker build -t tensorflow-builder -f Dockerfile.amd64 --build-arg TENSORFLOW_VERSION=${TENSORFLOW_VERSION} --build-arg BAZEL_VERSION=${BAZEL_VERSION} --build-arg NUMPY_VERSION=${NUMPY_VERSION} .
-  mkdir -p wheels
   docker run --rm -it --mount type=bind,source="$(pwd)"/wheels,target=/host_wheels tensorflow-builder bash -c "cp /wheels/* /host_wheels/"
-  echo "\nHopefully your package is now in the 'wheels' directory."
 
 else
   # Clone Tensorflow repo if it doesn't exist already
@@ -44,4 +43,9 @@ else
   if [[ "${ARCH}" == "arm64v8" ]]; then
     tensorflow/tools/ci_build/ci_build.sh PI-PYTHON38 tensorflow/tools/ci_build/pi/build_raspberry_pi.sh AARCH64
   fi
+
+  cd ..
+  cp tensorflow/output-artifacts/tensorflow-*.whl wheels/
 fi
+
+echo "\nYour Tensorflow package should now be in the 'wheels' directory."
